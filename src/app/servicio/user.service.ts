@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
+import { v4 as uuidv4 } from 'uuid'; // Importamos la función para generar UUID
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 export class UserService {
   private apiUrl = 'http://localhost:3000/users';
 
-  users = signal<User[]>([]);
+  users = signal<User[]>([]); // Signal para manejar la lista de usuarios
 
   constructor(private http: HttpClient) {
     this.loadUsers();
@@ -21,20 +22,22 @@ export class UserService {
       .subscribe((users) => this.users.set(users));
   }
 
-  // Agregar Usuario
-  addUsers(user: User) {
-    this.http.post<User>(this.apiUrl, user).subscribe((newUser) => {
-      this.users.set([...this.users(), newUser]);
+  // Agregar Usuario con UUID
+  addUser(user: User) {
+    const newUser: User = { ...user, id: uuidv4() }; // Generamos un UUID
+
+    this.http.post<User>(this.apiUrl, newUser).subscribe((addedUser) => {
+      this.users.set([...this.users(), addedUser]);
     });
   }
 
-  //Actualizar usuario
-  updataUser(user: User) {
+  //Actualizar usuario con UUID
+  updateUser(user: User) {
     this.http
       .put<User>(`${this.apiUrl}/${user.id}`, user)
-      .subscribe((updatadUser) => {
+      .subscribe((updatedUser) => {
         this.users.set(
-          this.users().map((u) => (u.id === updatadUser.id ? updatadUser : u))
+          this.users().map((u) => (u.id === updatedUser.id ? updatedUser : u))
         );
       });
   }

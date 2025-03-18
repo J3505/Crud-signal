@@ -1,6 +1,5 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { v4 as uuidv4 } from 'uuid';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { UserService } from './servicio/user.service';
@@ -22,17 +21,17 @@ export class AppComponent {
   constructor(public userService: UserService) {}
 
   // Agregar Usuario
-  addUser() {
-    if (this.name() && this.email()) {
-      this.userService.addUsers({
-        id: uuidv4(),
-        name: this.name(),
-        email: this.email(),
-      });
-      this.name.set('');
-      this.email.set('');
-    }
-  }
+  // addUser() {
+  //   if (this.name() && this.email()) {
+  //     this.userService.addUsers({
+  //       id: uuidv4(),
+  //       name: this.name(),
+  //       email: this.email(),
+  //     });
+  //     this.name.set('');
+  //     this.email.set('');
+  //   }
+  // }
 
   addOrUpdateUser() {
     if (this.editingUser()) {
@@ -42,12 +41,11 @@ export class AppComponent {
         name: this.name(),
         email: this.email(),
       };
-      this.userService.updataUser(updatedUser);
-      this.cancelEdit(updatedUser);
+      this.userService.updateUser(updatedUser);
+      // this.cancelEdit();
     } else {
       // Agregar nuevo usuario
-      this.userService.addUsers({
-        id: uuidv4(),
+      this.userService.addUser({
         name: this.name(),
         email: this.email(),
       });
@@ -55,20 +53,21 @@ export class AppComponent {
     this.name.set('');
     this.email.set('');
   }
+
   editUser(user: User) {
     this.editingUser.set(user);
     this.name.set(user.name);
     this.email.set(user.email);
   }
 
-  cancelEdit(user: User){
-    this.editingUser.set(user);
-    this.name.set(user.name);
-    this.email.set(user.email);
-
-  }
   // Borrar Usuario
   deleteUser(id: string) {
     this.userService.deleteUser(id);
+  }
+
+  cancelEdit() {
+    this.editingUser.set(null);
+    this.name.set('');
+    this.email.set('');
   }
 }

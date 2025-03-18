@@ -1,17 +1,25 @@
 <div>
   <h2>Usuarios</h2>
 
-  <input [(ngModel)]="name" placeholder="Nombre">
-  <input [(ngModel)]="email" placeholder="Correo">
-  <button (click)="addUser()">Agregar</button>
+  <input [(ngModel)]="name" placeholder="Nombre"> <br>
+  <input [(ngModel)]="email" placeholder="Correo"> <br>
+
+  <button (click)="addOrUpdateUser()">
+    {{ editingUser() ? 'Actualizar' : 'Agregar' }}
+  </button>
+
+  @if (editingUser()) {
+
+    <button  (click)="cancelEdit()">Cancelar</button>
+  }
 
   <ul>
     @for (user of userService.users(); track $index) {
 
       <li>
         {{ user.name }} - {{ user.email }}
+        <button (click)="editUser(user)">Editar</button>
         <button (click)="deleteUser(user.id!)">Eliminar</button>
-        <button (click)="editUser(user)">Actulizar</button>
       </li>
     }
   </ul>
